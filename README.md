@@ -1,26 +1,27 @@
-<h1 align="center">PyStyle</h1>
+<h1 align="center">PyStylist</h1>
 <br>
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-1.5-blue.svg?cacheSeconds=2592000" />
-  <a href="https://github.com/billythegoat356/pystyle/blob/main/README.md" target="_blank">
+  <a href="https://github.com/sevenv1/pystylist/blob/main/README.md" target="_blank">
     <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
   </a>
-  <a href="https://github.com/billythegoat356/pystyle" target="_blank">
+  <a href="https://github.com/sevenv1/pystylist" target="_blank">
     <img alt="Maintenance" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" />
   </a>
-  <a href="https://github.com/billythegoat356/pystyle/blob/main/LICENSE" target="_blank">
-    <img alt="License: EPL-2.0" src="https://img.shields.io/github/license/billythegoat356/pystyle" />
+  <a href="https://github.com/sevenv1/pystylist/blob/main/LICENSE" target="_blank">
+    <img alt="License: EPL-2.0" src="https://img.shields.io/github/license/sevenv1/pystylist" />
   </a>
-  <a href="https://pepy.tech/project/pystyle" target="_blank">
+  <a href="https://pepy.tech/project/pystylist" target="_blank">
     <img alt="Downloads" src="https://static.pepy.tech/personalized-badge/pystyle?period=total&units=international_system&left_color=grey&right_color=orange&left_text=Downloads" />
   </a>
 </p>
 
-> **PyStyle** is a python library to make very beautiful TUI designs.
+> **PyStylist** is a python library to make very beautiful TUI designs.
 > <br>
 > Inspired by **pyfade** and **pycenter**,
 > <br>
-> Developped by [Billy](https://github.com/billythegoat356), [loTus01](https://github.com/loTus04), and [BlueRed](https://github.com/CSM-BlueRed)
+> Developed by [Billy](https://github.com/billythegoat356), [loTus01](https://github.com/loTus04), and [BlueRed](https://github.com/CSM-BlueRed)
+> Updated in 2024 by [sevenv1](https://github.com/sevenv1)
 
 
 <img src="https://media.discordapp.net/attachments/888138903138213911/888139229681561681/pystylebanner.png"/> 
@@ -28,9 +29,9 @@
 ## Install
 
 ```sh
-pip3 install pystyle
+pip3 install pystylist
 ```
-Stats: https://pepy.tech/project/pystyle
+Stats: https://pepy.tech/project/pystylist
 
 # FEATURES IN THE DOC
 
@@ -52,7 +53,7 @@ Stats: https://pepy.tech/project/pystyle
 <br>
 
 ```python
-from pystyle import Colors, Colorate
+from pystylist import Colors, Colorate
 text = "Hello world!"
 print(Colors.blue + text)
 # or
@@ -80,8 +81,8 @@ Available functions are:
 <br>
 
 ```python
-from pystyle import Colors, Colorate
-print(Colorate.Horizontal(Colors.yellow_to_red, "Hello, Welcome to Pystyle.", 1))
+from pystylist import Colors, Colorate
+print(Colorate.Horizontal(Colors.yellow_to_red, "Hello, Welcome to pystylist.", 1))
 ```
 
 <br>
@@ -104,10 +105,10 @@ Available effects are:
 
 <br>
 
-To print a text with a writing and fade effect you can use the `pystyle.Write` function.
+To print a text with a writing and fade effect you can use the `pystylist.Write` function.
 
 ```python
-from pystyle import Write, Colors
+from pystylist import Write, Colors
 
 name = Write.Input("Enter your name -> ", Colors.red_to_purple, interval=0.0025)
 Write.Print(f"Nice to meet you, {name}!", Colors.blue_to_green, interval=0.05)
@@ -146,15 +147,15 @@ There are 6 arguments:<br>
 <p><i><strong>Center a text in the terminal.</strong></i></p>
 
 ```python
-from pystyle import Center
-print(Center.XCenter("Hello, Welcome to Pystyle."))
+from pystylist import Center
+print(Center.XCenter("Hello, Welcome to pystylist."))
 ```
 <br>
 <p>Output:</p>
 <br>
 
 ```
-                                            Hello, Welcome to Pystyle.                                
+                                            Hello, Welcome to pystylist.                                
 ```
 
 
@@ -172,7 +173,7 @@ Available modes are:
 <img src="https://media.discordapp.net/attachments/888138903138213911/888139239357816842/addbanner.png" width="479" height="222"/>
 
 ```python
-from pystyle import Add
+from pystylist import Add
 banner1 = '''
     .--.
   .'_\/_'.
@@ -183,7 +184,7 @@ banner1 = '''
  (/\\||/
 ____\||/____'''
 
-text = "This is a beautiful banner\nmade with pystyle"
+text = "This is a beautiful banner\nmade with pystylist"
 
 print(Add.Add(banner1, text, 4))
 ```
@@ -195,7 +196,7 @@ Output:
   .'_\/_'.
   '. /\ .'
     "||"    This is a beautiful banner
-     || /\  made with pystyle
+     || /\  made with pystylist
   /\ ||//\)
  (/\||/
 ____\||/____
@@ -211,19 +212,19 @@ ____\||/____
 <br>
 
 ```python
-from pystyle import Box
-print(Box.Lines("Hello, Welcome to Pystyle."))
-print(Box.DoubleCube("Hello, Welcome to Pystyle."))
+from pystylist import Box
+print(Box.Lines("Hello, Welcome to pystylist."))
+print(Box.DoubleCube("Hello, Welcome to pystylist."))
 ```
 
 Output:
 
 ```
 ─══════════════════════════☆☆══════════════════════════─
-               Hello, Welcome to Pystyle.
+               Hello, Welcome to pystylist.
 ─══════════════════════════☆☆══════════════════════════─
 ╔════════════════════════════╗
-║ Hello, Welcome to Pystyle. ║
+║ Hello, Welcome to pystylist. ║
 ╚════════════════════════════╝
 ```
 
@@ -236,7 +237,7 @@ Available modes are:
 Show cursor!
 
 ```python
-from pystyle import Cursor
+from pystylist import Cursor
 
 Cursor.ShowCursor()
 ```
@@ -244,7 +245,7 @@ Cursor.ShowCursor()
 Hide cursor!
 
 ```python
-from pystyle import Cursor
+from pystylist import Cursor
 
 Cursor.HideCursor()
 ```
@@ -252,19 +253,19 @@ Cursor.HideCursor()
 ## System functions
 ### Check the terminal support colors
 ```python
-from pystyle import System
+from pystylist import System
 
 System.Init()
 ```
 ### Clear the terminal screen
 ```python
-from pystyle import System
+from pystylist import System
 
 System.Clear()
 ```
 ### Change the terminal title
 ```python
-from pystyle import System
+from pystylist import System
 
 System.Title("The title")
 ```
@@ -274,13 +275,13 @@ System.Title("The title")
 **Notice** This feature is only working on windows
 
 ```python
-from pystyle import System
+from pystylist import System
 
 System.Size(12,12)
 ```
 ### Run a shell command
 ```python
-from pystyle import System
+from pystylist import System
 
 System.Command("echo hello")
 ```
@@ -293,14 +294,14 @@ System.Command("echo hello")
 👤 GitHub: [@**billythegoat356**](https://github.com/billythegoat356)<br>
 👤 GitHub: [@**loTus01**](https://github.com/loTus04)<br>
 👤 GitHub: [@**BlueRed**](https://github.com/CSM-BlueRed)<br>
+👤 GitHub: [@**sevenv1**](https://github.com/sevenv1)<br>
+
 
 ## 🤝 Contributing
 
-Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/billythegoat356/pystyle/issues).
+Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/sevenv1/pystylist/issues).
 
 ## ❤ Show your support
 
 Give a ⭐️ if this project helped you!
-
-
 ***
