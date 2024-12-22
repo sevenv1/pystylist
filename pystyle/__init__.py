@@ -1,15 +1,47 @@
 # made by billythegoat356, loTus01, and BlueRed
-
 # https://github.com/billythegoat356 https://github.com/loTus04 https://github.com/CSM-BlueRed
+# ALL CREDITS GO TO PEOPLE WHO MADE THIS I DONT TAKE ANY CREDIT ALL I DID WAS ADD A FEW THINGS !!!!
 
-# Version : 2.0 (added Colorate.Format, added Banner.Arrow, added Anime.Move, added Center.GroupAlign, added Center.TextAlign, updated Box to Banner, updated Box.Lines))
+# Version : 3 - 12/21/24
+# Added: 
+"""
+System Class:
+    Init() now initializes terminal colors on Windows.
+    Added GetSize() to get terminal size.
+    Added SupportsColor() to check if the terminal supports color.
 
-# based on pyfade anc pycenter, R.I.P
+Cursor Class:
+    Added MoveCursor(x: int, y: int) to move the cursor to a specific position.
 
-# <3
+_MakeColors Class:
+    Added _makebgansi(col: str, text: str) to create background colors.
 
+Colors Class:
+    Added StaticBG(r: int, g: int, b: int) to create static background colors.
 
-from os import name as _name, system as _system, get_terminal_size as _terminal_size, terminal_size
+Colorate Class:
+    Added BGColor(color: str, text: str, end: bool = True) to color the background of text.
+
+Anime Class:
+    Added ProgressBar() to create a progress bar with percentage display.
+
+Center Class:
+    Added XYCenter(text: str) to center text both vertically and horizontally.
+
+ExtendedColors Class:
+    Added gradient() method to create text with a color gradient.
+
+ExtendedAnime Class:
+    Added Bounce() method to create a bouncing text animation.
+
+ExtendedBanner Class:
+    Added Rainbow() method to create a rainbow-colored banner.
+
+TerminalArt Class:
+    Added AcsiiArtGen() method to create ASCII art from text.
+"""
+
+from os import name as _name, system as _system, get_terminal_size as _terminal_size, environ
 from sys import stdout as _stdout
 from time import sleep as _sleep
 from threading import Thread as _thread
@@ -39,7 +71,8 @@ class System:
     Windows = _name == 'nt'
 
     def Init():
-        _system('')
+        if System.Windows:
+            _system('color')
 
     def Clear():
         return _system("cls" if System.Windows else "clear")
@@ -50,11 +83,16 @@ class System:
 
     def Size(x: int, y: int):
         if System.Windows:
-            return _system(f"mode {x}, {y}")
+            return _system(f"mode con: cols={x} lines={y}")
 
     def Command(command: str):
         return _system(command)
 
+    def GetSize():
+        return _terminal_size()
+
+    def SupportsColor():
+        return System.Windows or 'TERM' in environ
 
 
 class Cursor:
@@ -79,6 +117,13 @@ class Cursor:
             _stdout.write("\033[?25h")
             _stdout.flush()
 
+    def MoveCursor(x: int, y: int):
+        if _name == 'posix':
+            _stdout.write(f"\033[{y};{x}H")
+            _stdout.flush()
+        elif _name == 'nt':
+            windll.kernel32.SetConsoleCursorPosition(windll.kernel32.GetStdHandle(-11), x + (y << 16))
+
     """ ! developper area ! """
 
     def _cursor(visible: bool):
@@ -94,7 +139,10 @@ class _MakeColors:
     """ ! developper area ! """
 
     def _makeansi(col: str, text: str) -> str:
-        return f"\033[38;2;{col}m{text}\033[38;2;255;255;255m"
+        return f"\033[38;2;{col}m{text}\033[0m"
+
+    def _makebgansi(col: str, text: str) -> str:
+        return f"\033[48;2;{col}m{text}\033[0m"
 
     def _rmansi(col: str) -> str:
         return col.replace('\033[38;2;', '').replace('m','').replace('50m', '').replace('\x1b[38', '')
@@ -166,6 +214,9 @@ class Colors:
 
     def StaticRGB(r: int, g: int, b: int) -> str:
         return _MakeColors._start(f"{r};{g};{b}")
+
+    def StaticBG(r: int, g: int, b: int) -> str:
+        return _MakeColors._makebgansi(f"{r};{g};{b}", "")
 
     def DynamicRGB(r1: int, g1: int, b1: int, r2: int,
                    g2: int, b2: int) -> list: ...
@@ -343,6 +394,7 @@ class Colors:
     red_to_green = _MakeColors._makergbcol(red_to_yellow, yellow_to_green)
 
     green_to_blue = _MakeColors._makergbcol(green_to_cyan, cyan_to_blue)
+    green_to_blue = _MakeColors._makergbcol(green_to_cyan, cyan_to_blue)
     green_to_red = _MakeColors._makergbcol(green_to_yellow, yellow_to_red)
 
     blue_to_red = _MakeColors._makergbcol(blue_to_purple, purple_to_red)
@@ -397,6 +449,9 @@ class Colorate:
 
     def Color(color: str, text: str, end: bool = True) -> str:
         return _MakeColors._maketext(color=color, text=text, end=end)
+
+    def BGColor(color: str, text: str, end: bool = True) -> str:
+        return _MakeColors._makebgansi(color=color, text=text)
 
     def Error(text: str, color: str = Colors.red, end: bool = False, spaces: bool = 1, enter: bool = True, wait: int = False) -> str:
         content = _MakeColors._maketext(
@@ -659,6 +714,43 @@ class Anime:
         if hide_cursor:
             Cursor.ShowCursor()
 
+    def ProgressBar(length, carac_0: str = '[ ]', carac_1: str = '[0]', color: list = Colors.white, mode=Colorate.Horizontal, interval: int = 0.5, hide_cursor: bool = True, enter: bool = False, center: bool = False):
+        if hide_cursor:
+            Cursor.HideCursor()
+
+        if type(color) == list:
+            while not length <= len(color):
+                ncolor = list(color)
+                for col in ncolor:
+                    color.append(col)
+
+        global passed
+        passed = False
+
+        if enter:
+            th = _thread(target=Anime._input)
+            th.start()
+
+        for i in range(length + 1):
+            bar = carac_1 * i + carac_0 * (length - i)
+            percentage = f"{int((i / length) * 100)}%"
+            if passed:
+                break
+            if type(color) == list:
+                if center:
+                    print(Center.XCenter(mode(color, bar + " " + percentage)))
+                else:
+                    print(mode(color, bar + " " + percentage))
+            else:
+                if center:
+                    print(Center.XCenter(color + bar + " " + percentage))
+                else:
+                    print(color + bar + " " + percentage)
+            _sleep(interval)
+            System.Clear()
+        if hide_cursor:
+            Cursor.ShowCursor()
+
     def Anime() -> None: ...
 
     """ ! developper area ! """
@@ -787,7 +879,6 @@ class Center:
         align = align.upper()
         mlen = max(len(i) for i in text.splitlines())
         if align == Center.center:
-
             return "\n".join((' ' * int(mlen/2 - len(lin)/2)) + lin for lin in text.splitlines())
         elif align == Center.left:
             return text
@@ -797,6 +888,10 @@ class Center:
         else:
             raise Center.BadAlignment()
 
+    def XYCenter(text: str):
+        xspaces = Center._xspaces(text=text)
+        yspaces = Center._yspaces(text=text)
+        return "\n" * yspaces + "\n".join(((" " * xspaces) + line) for line in text.splitlines())
 
     """ ! developper area ! """
 
@@ -992,3 +1087,100 @@ class Banner:
 Box = Banner
 
 System.Init()
+
+class ExtendedColors:
+    """
+    Extended color functionality
+    """
+    @staticmethod
+    def gradient(start_color: tuple, end_color: tuple, text: str):
+        """Generate a gradient text"""
+        r1, g1, b1 = start_color
+        r2, g2, b2 = end_color
+        steps = len(text)
+        r_step = (r2 - r1) / steps
+        g_step = (g2 - g1) / steps
+        b_step = (b2 - b1) / steps
+        
+        gradient_text = ""
+        for i, char in enumerate(text):
+            r = int(r1 + r_step * i)
+            g = int(g1 + g_step * i)
+            b = int(b1 + b_step * i)
+            gradient_text += f"\033[38;2;{r};{g};{b}m{char}"
+        
+        return gradient_text + "\033[0m"
+
+class ExtendedAnime:
+    """
+    Extended animation functionality
+    """
+    @staticmethod
+    def Bounce(text: str, color: list, width: int = 80, speed: float = 0.1, iterations: int = 5):
+        """Create a bouncing text animation"""
+        for _ in range(iterations):
+            for i in range(width - len(text)):
+                System.Clear()
+                print(" " * i + Colorate.Horizontal(color, text))
+                Cursor.HideCursor()
+                _sleep(speed)
+            for i in range(width - len(text), 0, -1):
+                System.Clear()
+                print(" " * i + Colorate.Horizontal(color, text))
+                Cursor.HideCursor()
+                _sleep(speed)
+        Cursor.ShowCursor()
+
+class ExtendedBanner:
+    """
+    Extended banner functionality
+    """
+    @staticmethod
+    def Rainbow(text: str):
+        """Create a rainbow-colored banner"""
+        rainbow_colors = [
+            Colors.red,
+            Colors.orange,
+            Colors.yellow,
+            Colors.green,
+            Colors.blue,
+            Colors.purple,
+            Colors.pink
+        ]
+        
+        banner = Banner.SimpleCube(text)
+        colored_banner = Colorate.Vertical(rainbow_colors, banner)
+        return colored_banner
+
+class TerminalArt:
+    """
+    ASCII art generator
+    """
+    @staticmethod
+    def AcsiiArtGen(text: str, font: str = 'standard'):
+        try:
+            from pyfiglet import Figlet
+            f = Figlet(font=font)
+            return f.renderText(text)
+        except ImportError:
+            return f"Error: pyfiglet module not found. Please install it using 'pip install pyfiglet'"
+
+# Example usage
+if __name__ == "__main__":
+    # Gradient example
+    gradient_text = ExtendedColors.gradient((255, 0, 0), (0, 0, 255), "Gradient Text Example")
+    print(gradient_text)
+    
+    # Bouncing text example
+    ExtendedAnime.Bounce("Bouncing Text!", Colors.rainbow, width=50, speed=0.05, iterations=3)
+    
+    # Rainbow banner example
+    rainbow_banner = ExtendedBanner.Rainbow("Rainbow Banner")
+    print(rainbow_banner)
+    
+    # ASCII art example
+    ascii_art = TerminalArt.AcsiiArtGen("ASCII ART")
+    print(Colorate.Horizontal(Colors.green_to_cyan, ascii_art))
+
+    # Progress bar with percentage
+    Anime.ProgressBar(20, carac_1="█", color=Colors.rainbow, interval=0.1, enter=True, center=True)
